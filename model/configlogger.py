@@ -14,7 +14,8 @@ def ConfigLogger(logdir):
     logger = logging.getLogger()
     logger.setLevel(level=logging.INFO)
     # 定义一个RotatingFileHandler，最多备份3个日志文件，每个日志文件最大1K
-    rHandler = RotatingFileHandler("log.txt", maxBytes=1*1024)
+    rHandler = RotatingFileHandler(
+        os.path.join(logdir, 'log.txt'), maxBytes=1*1024)
     rHandler.setLevel(logging.INFO)
     formatter = logging.Formatter(
         '%(asctime)s - %(name)s - %(levelname)s - %(message)s')
