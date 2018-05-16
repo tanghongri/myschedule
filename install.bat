@@ -1,12 +1,11 @@
 :: 关闭终端回显 
-@echo off
-
+@echo off	
 >nul 2>&1 "%SYSTEMROOT%\system32\cacls.exe" "%SYSTEMROOT%\system32\config\system"  
   
 if '%errorlevel%' NEQ '0' (  
 echo 请求管理员权限...  
 echo Set UAC = CreateObject^("Shell.Application"^) > "%temp%\getadmin.vbs"  
-echo UAC.ShellExecute "%~s0", "", "", "runas", 1 >> "%temp%\getadmin.vbs"  
+echo UAC.ShellExecute "%~f0", "", "", "runas", 1 >> "%temp%\getadmin.vbs"  
 "%temp%\getadmin.vbs"   
 exit /B   
 )
@@ -21,6 +20,8 @@ if '%errorlevel%' EQU '0' (
 	exit
 )  
 
+for /f "delims=" %%i in ('where pythonw') do (set PYTHONPATH=%%i)
+echo [INFO]python 路径：%PYTHONPATH%
 :: 检查 pip 环境
 echo.
 pip -V
@@ -52,5 +53,5 @@ if exist "%~dp0requirements.txt" (
 
 echo.
 echo [INFO]添加开机自启动
-reg add "HKLM\Software\Microsoft\Windows\CurrentVersion\Run" /v "myschedule" /t REG_SZ /d "python %~dp0startschedule.py"
+reg add "HKLM\Software\Microsoft\Windows\CurrentVersion\Run" /v "myschedule" /t REG_SZ /d "%PYTHONPATH% %~dp0startschedule.py"
 pause
