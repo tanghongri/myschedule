@@ -2,6 +2,7 @@ import platform
 import logging
 '''
 配置开机自启动
+暂时弃用，由安装脚本控制开机启动
 '''
 logger = logging.getLogger(__file__)
 
