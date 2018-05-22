@@ -1,9 +1,13 @@
 import platform
 import logging
-import winreg
 # 添加搜索路径
 import sys
 sys.path.append("../myschedule")
+
+if sys.version_info[0] == 3:
+    import winreg as winreg
+else:
+    import _winreg as winreg
 
 '''
 配置开机自启动
@@ -50,5 +54,9 @@ def ConfigAutoStart(startpath):
 
 
 if __name__ == '__main__':
-    bRet = ConfigAutoStart('test1')
-    print(str(bRet))
+    argc = len(sys.argv)
+    if argc == 2:
+        ConfigAutoStart(sys.argv[1])
+    else:
+        bRet = ConfigAutoStart('test1')
+        print(str(bRet))
