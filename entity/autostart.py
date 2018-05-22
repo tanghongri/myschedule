@@ -5,7 +5,6 @@ import os
 import sys
 
 
-
 if sys.version_info[0] == 3:
     import winreg as winreg
 else:
@@ -66,13 +65,18 @@ def ConfigAutoStart(startpath):
 
 
 if __name__ == '__main__':
+    # 同级不同目录包导入问题
     curdir = os.path.dirname(os.path.abspath(__file__))
     os.chdir(curdir)
     sys.path.append("..")
+    from model import wincommon
     from model import windowsuac
+    
+
     argc = len(sys.argv)
     if argc == 2:
         ConfigAutoStart(sys.argv[1])
     else:
-        bRet = ConfigAutoStart('test1')
+        starfile = os.path.join(os.path.dirname(curdir), 'startschedule.py')
+        bRet = ConfigAutoStart(starfile)
         print(str(bRet))
