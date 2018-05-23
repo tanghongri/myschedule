@@ -34,7 +34,7 @@ def WindowsCreateAutoStart(valuename, value):
     return True
 
 
-def WindowsAutoStart(tarvalue, valuename='myschedule1'):
+def WindowsAutoStart(tarvalue, valuename='myschedule'):
     # 检查注册表启动项是否存在
     key = None
     vlaue = None
@@ -46,7 +46,7 @@ def WindowsAutoStart(tarvalue, valuename='myschedule1'):
         return False
     try:
         vlaue, type = winreg.QueryValueEx(key, valuename)
-        if type != winreg.REG_SZ or vlaue != tarvalue:
+        if type != winreg.REG_SZ or vlaue.lower() != tarvalue.lower():
             vlaue = None
     except OSError:
         pass
@@ -68,15 +68,15 @@ if __name__ == '__main__':
     # 同级不同目录包导入问题
     curdir = os.path.dirname(os.path.abspath(__file__))
     os.chdir(curdir)
-    sys.path.append("..")
-    from model import wincommon
-    from model import windowsuac
-    
+    sys.path.append("../..")
+    from myschedule.model import windowsuac
 
     argc = len(sys.argv)
     if argc == 2:
         ConfigAutoStart(sys.argv[1])
     else:
-        starfile = os.path.join(os.path.dirname(curdir), 'startschedule.py')
-        bRet = ConfigAutoStart(starfile)
+        starfile = os.path.join(os.path.dirname(
+            os.path.dirname(curdir)), 'startschedule.py')
+        regvalue = windowsuac.PYTHON_CMD+' '+starfile
+        bRet = ConfigAutoStart(regvalue)
         print(str(bRet))
