@@ -24,6 +24,7 @@ def WindowsCreateAutoStart(valuename, value):
             key = winreg.OpenKeyEx(winreg.HKEY_LOCAL_MACHINE,
                                    'Software\Microsoft\Windows\CurrentVersion\Run', access=winreg.KEY_WRITE)
             winreg.SetValueEx(key, valuename, 0, winreg.REG_SZ, value)
+            logger.info("SetValueEx: "+value)
         except OSError:
             logger.exception('WindowsAutoStart')
             return False
