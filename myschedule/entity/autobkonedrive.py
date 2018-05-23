@@ -18,23 +18,25 @@ def ConnectOneDrive():
     client = onedrivesdk.get_default_client(client_id=onedriveconfig.CLIENT_ID,
                                             scopes=onedriveconfig.SCOPES)
     auth_url = client.auth_provider.get_auth_url(onedriveconfig.REDIRECT_URI)
-
     # Block thread until we have the code
-    code = GetAuthCodeServer.get_auth_code(auth_url, onedriveconfig.REDIRECT_URI)
+    code = GetAuthCodeServer.get_auth_code(
+        auth_url, onedriveconfig.REDIRECT_URI)
     # Finally, authenticate!
     client.auth_provider.authenticate(
         code, onedriveconfig.REDIRECT_URI, onedriveconfig.CLIENT_SECRET)
     # Save the session for later
-    client.auth_provider.save_session()
+    #client.auth_provider.save_session()
+    return client
 
-    item_id = "root"
-    items = client.item(id=item_id).children.get()
-    print("0: UP")
-    count = 0
-    for count, item in enumerate(items):
-        print("{} {}".format(
-            count+1, item.name if item.folder is None else "/"+item.name))
+def list_changes(client, item_id, token):
+    collection_page = client.item(id=item_id).delta(token).get()
+    for item in collection_page:
+        print(item.name)
 
+    print("TOKEN: {}".format(collection_page.token))
+
+# OneDrive客户端连接
+onedriveclient = ConnectOneDrive()
 
 if __name__ == '__main__':
     bRet = ConnectOneDrive()
