@@ -1,7 +1,6 @@
 import os
 import logging
-from model import configlogger
-
+from myschedule.model import configlogger
 
 if __name__ == '__main__':
     curdir = os.path.dirname(os.path.abspath(__file__))
