@@ -3,13 +3,19 @@ import logging
 import os
 # 添加搜索路径
 import sys
-
-
 if sys.version_info[0] == 3:
     import winreg as winreg
 else:
     import _winreg as winreg
 
+if __name__ == '__main__':
+    # 同级不同目录包导入问题
+    curdir = os.path.dirname(os.path.abspath(__file__))
+    os.chdir(curdir)
+    sys.path.append("../..")
+    from myschedule.model import windowsuac
+else:
+    from myschedule.model import windowsuac
 '''
 配置开机自启动
 暂时弃用，由安装脚本控制开机启动
@@ -39,6 +45,7 @@ def WindowsAutoStart(tarvalue, valuename='myschedule'):
     # 检查注册表启动项是否存在
     key = None
     vlaue = None
+    regvalue = windowsuac.PYTHON_CMD+' '+tarvalue
     try:
         key = winreg.OpenKeyEx(winreg.HKEY_LOCAL_MACHINE,
                                'Software\Microsoft\Windows\CurrentVersion\Run')
@@ -47,12 +54,12 @@ def WindowsAutoStart(tarvalue, valuename='myschedule'):
         return False
     try:
         vlaue, type = winreg.QueryValueEx(key, valuename)
-        if type != winreg.REG_SZ or vlaue.lower() != tarvalue.lower():
+        if type != winreg.REG_SZ or vlaue.lower() != regvalue.lower():
             vlaue = None
     except OSError:
         pass
     if vlaue == None:
-        return WindowsCreateAutoStart(valuename, tarvalue)
+        return WindowsCreateAutoStart(valuename, regvalue)
     return True
 
 
@@ -66,18 +73,12 @@ def ConfigAutoStart(startpath):
 
 
 if __name__ == '__main__':
-    # 同级不同目录包导入问题
-    curdir = os.path.dirname(os.path.abspath(__file__))
-    os.chdir(curdir)
-    sys.path.append("../..")
-    from myschedule.model import windowsuac
-
     argc = len(sys.argv)
     if argc == 2:
         ConfigAutoStart(sys.argv[1])
     else:
         starfile = os.path.join(os.path.dirname(
             os.path.dirname(curdir)), 'startschedule.py')
-        regvalue = windowsuac.PYTHON_CMD+' '+starfile
-        bRet = ConfigAutoStart(regvalue)
+
+        bRet = ConfigAutoStart(starfile)
         print(str(bRet))
