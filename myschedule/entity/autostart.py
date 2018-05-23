@@ -13,9 +13,8 @@ if __name__ == '__main__':
     curdir = os.path.dirname(os.path.abspath(__file__))
     os.chdir(curdir)
     sys.path.append("../..")
-    from myschedule.model import windowsuac
-else:
-    from myschedule.model import windowsuac
+
+from myschedule.model import windowsuac
 '''
 配置开机自启动
 暂时弃用，由安装脚本控制开机启动
