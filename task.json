@@ -1,0 +1,8 @@
+[
+    {
+        "model": "onedrive",
+        "backdir": "",
+        "full": "* * 1 * *",
+        "differential ": "* * */7 * *"
+    }
+]

@@ -1,6 +1,7 @@
-import onedrivesdk
 import sys
 import os
+import shutil
+import onedrivesdk
 from onedrivesdk.helpers import GetAuthCodeServer
 
 if __name__ == '__main__':
@@ -25,8 +26,9 @@ def ConnectOneDrive():
     client.auth_provider.authenticate(
         code, onedriveconfig.REDIRECT_URI, onedriveconfig.CLIENT_SECRET)
     # Save the session for later
-    #client.auth_provider.save_session()
+    # client.auth_provider.save_session()
     return client
+
 
 def list_changes(client, item_id, token):
     collection_page = client.item(id=item_id).delta(token).get()
@@ -35,9 +37,41 @@ def list_changes(client, item_id, token):
 
     print("TOKEN: {}".format(collection_page.token))
 
-# OneDrive客户端连接
-onedriveclient = ConnectOneDrive()
 
+def Download(client, item_id, tardir):
+    items = client.item(id=item_id).children.get()
+
+    for item in items:
+        if item.folder:
+            subdir = os.path.join(tardir, item.name)
+            os.makedirs(subdir)
+            Download(client, item.id, subdir)
+        else:
+            client.item(id=item.id).download(os.path.join(tardir, item.name))
+
+
+def FullBack(client, backdir):
+    # 创建临时目录
+    Temp_Dir = os.path.join(backdir, 'temp')
+    if os.path.exists(Temp_Dir):
+        if os.path.isdir(Temp_Dir):
+            shutil.rmtree(Temp_Dir)
+        else:
+            os.remove(Temp_Dir)
+    os.makedirs(Temp_Dir)
+
+    item_id = "root"
+    Download(client, item_id, Temp_Dir)
+
+
+
+    # OneDrive客户端连接
 if __name__ == '__main__':
-    bRet = ConnectOneDrive()
-    print(str(bRet))
+    onedriveclient = ConnectOneDrive()
+    item_id = "root"
+    token = ''
+
+    list_changes(onedriveclient, item_id, token)
+    # 全量备份
+    backdir = r'G:\云同步\OneDrive'
+    FullBack(onedriveclient, backdir)
