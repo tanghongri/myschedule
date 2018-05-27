@@ -4,7 +4,7 @@ import os
 from string import Template
 '''
 加载config.jso配置文件
-
+字段命名：module_key=value
 '''
 logger = logging.getLogger(__file__)
 
@@ -29,7 +29,6 @@ def LoadJsonFile(filepath, sysconfig):
                 for key, value in configjosn[module].items():
                     sysconfig[module+'_' +
                               key] = Template(value).safe_substitute(sysconfig)
-
     except:
         logger.exception('LoadJsonFile')
 
