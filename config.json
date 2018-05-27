@@ -1,5 +1,5 @@
 {
     "wechat": {
-        "picDir": "${RUN_DIR}/onedrive/wechat"
+        "picDir": "${TEMP_DIR}/onedrive/wechat"
     }
 }
