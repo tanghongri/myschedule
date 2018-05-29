@@ -1,5 +1,6 @@
 {
     "wechat": {
-        "picDir": "${TEMP_DIR}/onedrive/wechat"
+        "picDir": "${TEMP_DIR}/wechat/onedrive",
+        "statusStorageDir": "${TEMP_DIR}/wechat/status"
     }
 }

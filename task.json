@@ -4,5 +4,14 @@
         "backdir": "",
         "full": "* * 1 * *",
         "differential ": "* * */7 * *"
+    },
+    {
+        "model": "wechat",
+        "taskname": "tanks",
+        "operations": [
+            {
+                "action": "login"
+            }
+        ]
     }
 ]
