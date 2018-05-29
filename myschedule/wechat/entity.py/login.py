@@ -23,6 +23,17 @@ def qrCallback(uuid, status, qrcode):
             f.write(qrcode)
 
 
+def loginCallback():
+    global picDir
+    if picDir:
+        if os.path.exists(picDir):
+            os.remove(picDir)
+
+
+def exitCallback():
+    pass
+
+
 def WechatLogin(sysconfig, name):
     if 'wechat_statusStorageDir' in sysconfig:
         statusStorageDir = sysconfig['wechat_statusStorageDir']
@@ -37,7 +48,7 @@ def WechatLogin(sysconfig, name):
             os.makedirs(picDir)
         picDir = picDir + '/' + name + '.png'
     newInstance.auto_login(
-        hotReload=True, statusStorageDir=statusStorageDir, qrCallback=qrCallback)
+        hotReload=True, statusStorageDir=statusStorageDir, qrCallback=qrCallback, loginCallback=loginCallback, exitCallback=exitCallback)
     newInstance.run()
 
 
